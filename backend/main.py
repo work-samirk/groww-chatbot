@@ -77,11 +77,11 @@ Output ONLY a JSON object:
 
     try:
         model = genai.GenerativeModel(MODEL_CLASSIFIER)
-        response = model.generate_content(
-            prompt,
-            generation_config={"response_mime_type": "application/json"}
-        )
-        data = json.loads(response.text.strip())
+        response = model.generate_content(prompt)
+        text_content = response.text.strip()
+        import re
+        text_content = re.sub(r"^```(?:json)?\s*|\s*```$", "", text_content, flags=re.MULTILINE | re.IGNORECASE).strip()
+        data = json.loads(text_content)
         return data.get("intent", "FACTUAL").upper()
     except Exception as e:
         print(f"Error during classification: {e}")
