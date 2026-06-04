@@ -210,7 +210,7 @@ The front end of the application is designed to be sleek, user-friendly, and com
 | **Vector DB** | ChromaDB (local) or Pinecone (cloud-based) | Simple setup, fast querying, native metadata filtering. |
 | **LLM Orchestrator** | Firebase AI Logic / Google Antigravity SDK | Directly integrates Gemini API securely with pre-configured schemas. |
 | **Embedding Model** | `text-embedding-3-small` or Gemini Embeddings | High semantic accuracy with low latency. |
-| **GenAI Model** | Gemini 3.5 Flash (Medium) | Fast responses, low costs, and large context windows for handling multi-page document chunks. |
+| **GenAI Model** | Gemini 2.0 Flash & Gemini 2.0 Flash-Lite | Extremely fast responses, industry-leading low latency, and highly optimized token costs. We use Flash-Lite for intent classification and Flash for context synthesis. |
 
 ---
 
