@@ -16,8 +16,8 @@ if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
 # Define models
-MODEL_CLASSIFIER = "gemini-2.0-flash-lite"
-MODEL_GENERATOR = "gemini-2.0-flash"
+MODEL_CLASSIFIER = "gemini-3.1-flash-lite"
+MODEL_GENERATOR = "gemini-3.5-flash"
 MODEL_EMBEDDING = "models/text-embedding-004"
 
 # Initialize FastAPI App

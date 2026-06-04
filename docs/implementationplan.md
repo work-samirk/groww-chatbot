@@ -10,7 +10,7 @@ We prioritize **free-tier and open-source tools** to ensure zero-cost developmen
 
 | Task | Recommended Free Tool | Paid Alternative (Optional) | Notes / Details |
 | :--- | :--- | :--- | :--- |
-| **LLM & Embeddings** | **Gemini 2.0 Flash / Gemini 2.0 Flash-Lite** (via Google AI Studio) | OpenAI API (GPT-4o-mini) | **Free Tier**: Google AI Studio provides 15 RPM / 1500 RPD for free, which is more than enough for development and testing. |
+| **LLM & Embeddings** | **Gemini 3.5 Flash / Gemini 3.1 Flash-Lite** (via Google AI Studio) | OpenAI API (GPT-4o-mini) | **Free Tier**: Google AI Studio provides 15 RPM / 1500 RPD for free, which is more than enough for development and testing. |
 | **Vector Database** | **ChromaDB** (Local & Open Source) | Pinecone (Serverless) | **ChromaDB** runs locally on the host machine for free, requiring no cloud account or credentials. |
 | **Web Scraper** | **Playwright** + **BeautifulSoup4** | ScrapingBee / Zyte | Playwright is open-source and free, capable of executing client-side JS to scrape hydrated data from `groww.in`. |
 | **Daily Scheduler** | **Local Crontab** or **GitHub Actions** | AWS EventBridge / Cronitor | **GitHub Actions** provides 2,000 free runner minutes per month for private repositories (unlimited for public repos). |
@@ -131,7 +131,7 @@ We prioritize **free-tier and open-source tools** to ensure zero-cost developmen
 *Goal: Classify query intents, retrieve documents, and synthesize answers.*
 
 - [x] **Input Guardrail & Intent Classifier**:
-  - Create a classifier using a lightweight prompt structure in **Gemini 2.0 Flash-Lite**:
+  - Create a classifier using a lightweight prompt structure in **Gemini 3.1 Flash-Lite**:
     - *Task*: Classify if user query is **Factual** (numerical details, names, step-by-step processes) or **Advisory** (opinions, comparisons, buy/sell recommendations).
 - [x] **Refusal Router**:
   - If query is advisory, return:
@@ -140,7 +140,7 @@ We prioritize **free-tier and open-source tools** to ensure zero-cost developmen
 - [x] **ChromaDB Retriever**:
   - For factual queries, query ChromaDB to get the top 3–5 matching chunks.
 - [x] **LLM Generation Pipeline**:
-  - Prompt **Gemini 2.0 Flash** with the retrieved context.
+  - Prompt **Gemini 3.5 Flash** with the retrieved context.
   - **Strict Prompt Instructions**:
     1. Maximum of 3 sentences.
     2. Exactly 1 citation link matching the `source_url` from the retrieved chunk.
