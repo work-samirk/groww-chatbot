@@ -130,16 +130,16 @@ We prioritize **free-tier and open-source tools** to ensure zero-cost developmen
 ### Phase 5: Query Guardrails & RAG Engine Implementation
 *Goal: Classify query intents, retrieve documents, and synthesize answers.*
 
-- [ ] **Input Guardrail & Intent Classifier**:
+- [x] **Input Guardrail & Intent Classifier**:
   - Create a classifier using a lightweight prompt structure in **Gemini 2.0 Flash-Lite**:
     - *Task*: Classify if user query is **Factual** (numerical details, names, step-by-step processes) or **Advisory** (opinions, comparisons, buy/sell recommendations).
-- [ ] **Refusal Router**:
+- [x] **Refusal Router**:
   - If query is advisory, return:
     - Polite refusal response.
     - Static educational links: [AMFI Mutual Funds Sahi Hai](https://www.mutualfundssahihai.com) or [SEBI Investor Education Portal](https://investor.sebi.gov.in).
-- [ ] **ChromaDB Retriever**:
+- [x] **ChromaDB Retriever**:
   - For factual queries, query ChromaDB to get the top 3–5 matching chunks.
-- [ ] **LLM Generation Pipeline**:
+- [x] **LLM Generation Pipeline**:
   - Prompt **Gemini 2.0 Flash** with the retrieved context.
   - **Strict Prompt Instructions**:
     1. Maximum of 3 sentences.
