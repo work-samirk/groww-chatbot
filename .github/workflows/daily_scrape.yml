@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *' # Run every day at midnight (UTC)
   workflow_dispatch: # Allow manual triggers from GitHub Actions UI
 
+permissions:
+  contents: write # Allows the workflow to push commits back to the repository
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -28,3 +31,16 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scraper/run_etl.py
+
+      - name: Commit and push scraped data updates
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw/
+          # Check if there are changes before committing
+          if [ -n "$(git status --porcelain data/raw/)" ]; then
+            git commit -m "Automated daily scrape update [skip ci]"
+            git push origin development
+          else
+            echo "No data changes detected. Skipping commit."
+          fi
