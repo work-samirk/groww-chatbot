@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+@theme {
+  --color-secondary-fixed-dim: #c3c5dd;
+  --color-surface-bright: #faf8ff;
+  --color-secondary-container: #dcdef7;
+  --color-on-surface-variant: #3c4a43;
+  --color-surface-container-highest: #e0e1f1;
+  --color-tertiary: #af3015;
+  --color-surface-container: #ecedfd;
+  --color-surface-tint: #006c4f;
+  --color-surface-dim: #d8d9e9;
+  --color-on-primary-fixed-variant: #00513b;
+  --color-on-tertiary-fixed: #3d0600;
+  --color-on-error: #ffffff;
+  --color-on-tertiary: #ffffff;
+  --color-on-secondary-container: #5f6176;
+  --color-secondary-fixed: #dfe1fa;
+  --color-secondary: #5a5d72;
+  --color-on-secondary-fixed: #171a2c;
+  --color-outline-variant: #bacac1;
+  --color-on-primary-fixed: #002116;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed-dim: #2fe0aa;
+  --color-on-tertiary-fixed-variant: #8c1800;
+  --color-inverse-on-surface: #eff0ff;
+  --color-primary: #006c4f;
+  --color-surface-container-high: #e6e7f7;
+  --color-error-container: #ffdad6;
+  --color-tertiary-fixed: #ffdad3;
+  --color-error: #ba1a1a;
+  --color-background: #faf8ff;
+  --color-on-tertiary-container: #8f1900;
+  --color-surface-container-low: #f3f2ff;
+  --color-on-primary-container: #00533c;
+  --color-inverse-primary: #2fe0aa;
+  --color-inverse-surface: #2d303c;
+  --color-tertiary-fixed-dim: #ffb4a4;
+  --color-outline: #6b7b72;
+  --color-on-surface: #181b26;
+  --color-surface-variant: #e0e1f1;
+  --color-primary-container: #00d09c;
+  --color-on-secondary-fixed-variant: #43465a;
+  --color-tertiary-container: #ff9e88;
+  --color-on-error-container: #93000a;
+  --color-primary-fixed: #59fdc5;
+  --color-surface: #faf8ff;
+  --color-on-background: #181b26;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-secondary: #ffffff;
+
+  --spacing-stack-xs: 0.25rem;
+  --spacing-section-padding: 2rem;
+  --spacing-stack-sm: 0.5rem;
+  --spacing-stack-md: 1rem;
+  --spacing-container-margin: 1rem;
+  --spacing-stack-lg: 1.5rem;
+  --spacing-gutter: 1rem;
+
+  --font-family-body-sm: "Inter", sans-serif;
+  --font-family-headline-lg: "Inter", sans-serif;
+  --font-family-headline-md: "Inter", sans-serif;
+  --font-family-body-md: "Inter", sans-serif;
+  --font-family-label-lg: "Inter", sans-serif;
+  --font-family-body-lg: "Inter", sans-serif;
+  --font-family-label-md: "Inter", sans-serif;
+  --font-family-headline-sm: "Inter", sans-serif;
+  --font-family-headline-lg-mobile: "Inter", sans-serif;
+
+  --animate-fade-up: fadeUp 0.5s ease-out forwards;
+  --animate-glow: glow 2s infinite;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-pill-entrance: pill-entrance 0.5s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes glow {
+  0%, 100% { border-color: rgba(0, 108, 79, 0.3); }
+  50% { border-color: rgba(0, 208, 156, 1); }
+}
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes pill-entrance {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+:root {
+  --background: #faf8ff;
+  --foreground: #181b26;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom design utilities from Stitch */
+.glitter-border-container {
+  position: relative;
+  padding: 2px;
+  background: linear-gradient(90deg, #006c4f, #00d09c, #2fe0aa, #00d09c, #006c4f);
+  background-size: 300% 100%;
+  animation: glitter 3s linear infinite;
+}
+
+@keyframes glitter {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.chat-bg-gradient {
+  background: radial-gradient(circle at 50% 50%, rgba(0, 108, 79, 0.05) 0%, rgba(250, 248, 255, 1) 100%);
+  min-height: 100%;
+}
+
+.entrance-anim {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }

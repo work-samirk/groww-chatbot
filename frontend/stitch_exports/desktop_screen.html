@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Groww FAQ Assistant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c3c5dd",
+                        "surface-bright": "#faf8ff",
+                        "secondary-container": "#dcdef7",
+                        "on-surface-variant": "#3c4a43",
+                        "surface-container-highest": "#e0e1f1",
+                        "tertiary": "#af3015",
+                        "surface-container": "#ecedfd",
+                        "surface-tint": "#006c4f",
+                        "surface-dim": "#d8d9e9",
+                        "on-primary-fixed-variant": "#00513b",
+                        "on-tertiary-fixed": "#3d0600",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#5f6176",
+                        "secondary-fixed": "#dfe1fa",
+                        "secondary": "#5a5d72",
+                        "on-secondary-fixed": "#171a2c",
+                        "outline-variant": "#bacac1",
+                        "on-primary-fixed": "#002116",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#2fe0aa",
+                        "on-tertiary-fixed-variant": "#8c1800",
+                        "inverse-on-surface": "#eff0ff",
+                        "primary": "#006c4f",
+                        "surface-container-high": "#e6e7f7",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdad3",
+                        "error": "#ba1a1a",
+                        "background": "#faf8ff",
+                        "on-tertiary-container": "#8f1900",
+                        "surface-container-low": "#f3f2ff",
+                        "on-primary-container": "#00533c",
+                        "inverse-primary": "#2fe0aa",
+                        "inverse-surface": "#2d303c",
+                        "tertiary-fixed-dim": "#ffb4a4",
+                        "outline": "#6b7b72",
+                        "on-surface": "#181b26",
+                        "surface-variant": "#e0e1f1",
+                        "primary-container": "#00d09c",
+                        "on-secondary-fixed-variant": "#43465a",
+                        "tertiary-container": "#ff9e88",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#59fdc5",
+                        "surface": "#faf8ff",
+                        "on-background": "#181b26",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-xs": "0.25rem",
+                        "section-padding": "2rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "container-margin": "1rem",
+                        "stack-lg": "1.5rem",
+                        "gutter": "1rem"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}]
+                    },
+                    "animation": {
+                        "fade-up": "fadeUp 0.5s ease-out forwards",
+                        "glow": "glow 2s infinite"
+                    },
+                    "keyframes": {
+                        "fadeUp": {
+                            "0%": { opacity: "0", transform: "translateY(10px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" }
+                        },
+                        "glow": {
+                            "0%, 100%": { "border-color": "rgba(0, 108, 79, 0.3)" },
+                            "50%": { "border-color": "rgba(0, 208, 156, 1)" }
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Glitter Border Animation */
+        .glitter-border-container {
+            position: relative;
+            padding: 2px;
+            background: linear-gradient(90deg, #006c4f, #00d09c, #2fe0aa, #00d09c, #006c4f);
+            background-size: 300% 100%;
+            border-radius: 1.25rem;
+            animation: glitter 3s linear infinite;
+        }
+        @keyframes glitter {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* Fix for blank screen: ensuring gradient has opacity or is valid */
+        .chat-bg-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(0, 108, 79, 0.05) 0%, rgba(250, 248, 255, 1) 100%);
+            min-height: 100%;
+        }
+
+        .entrance-anim {
+            opacity: 0;
+            animation: fadeUp 0.6s ease-out forwards;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<div class="flex h-screen overflow-hidden">
+<!-- Side Navigation -->
+<aside class="flex flex-col h-full p-stack-md bg-surface-container border-r border-outline-variant w-64 md:flex">
+<div class="mb-stack-lg flex items-center entrance-anim justify-center">
+<img alt="Groww Logo" class="h-10 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpl7Gk8AvLkwLk8rmKYPyRyCeIf3_foLlJ-8DZuEnNDePrSiNYqQk_kY55Vu5sJJlze4Z7WULGEz52K2Ee5pr29-6tumhNPmAaWACsVtxUnjVvM0x6QNkT5xeXuqGfopKWLi8cYISd-WWaM8D4fMPJX-IA8gGn3AcWuIr3DhtdpJw_-lp1EXQ0y84WPSAOntoPlq6dl2u79wBLPJGH02wJ768amEP-ssRZUNPCiysC0s0cuNenAQhk28Fl3nK9FnzhqTxFrYMQoto"/>
+</div>
+<button class="mb-stack-lg flex items-center justify-center gap-stack-sm bg-primary-container text-on-primary-container py-3 px-4 rounded-xl font-label-lg transition-transform active:scale-95 entrance-anim delay-1">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="">New Discussion</span>
+</button>
+<nav class="flex flex-col gap-stack-xs flex-1 entrance-anim delay-2">
+<a class="flex items-center gap-stack-sm p-3 bg-primary-container text-on-primary-container rounded-lg font-label-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="">Chat</span>
+</a>
+<a class="flex items-center gap-stack-sm p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="">History</span>
+</a>
+<a class="flex items-center gap-stack-sm p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="">Saved Funds</span>
+</a>
+<a class="flex items-center gap-stack-sm p-3 text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-lg transition-all mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="">Settings</span>
+</a>
+</nav>
+<div class="mt-stack-lg p-stack-sm flex items-center gap-stack-sm border-t border-outline-variant pt-stack-md entrance-anim delay-3">
+<img alt="User Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGai3GvZWgDo9dh85Ap6A7xJ6Q4W4j62eL-yUA_7O2lK1f1H84T8ypHKshv0-h2L7y526EkoGC8wYCrCP4gCPejBP6YHjLQfrk329wFoQjZre4QlZp62SW4l8IdKZc1cvsNNHowJ6sX1j03qyVqaeJ9RdVgHgWkAHsT9oStBwDgSqx8iiUgnclNEinh3zYSwRNPFD-Ht1zMep0sgncYp54Cp97cl4R2EOzSYVfjorKbol3kKZTYPSU2s8xMqrcS2ka7u2wDgEjKz8"/>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Investor Account</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Verified Portfolio</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface relative chat-bg-gradient">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-container-margin py-stack-md sticky top-0 z-50 bg-surface/80 backdrop-blur-sm border-b border-outline-variant/10">
+<div class="flex items-center entrance-anim ml-4">
+<img alt="Groww Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpl7Gk8AvLkwLk8rmKYPyRyCeIf3_foLlJ-8DZuEnNDePrSiNYqQk_kY55Vu5sJJlze4Z7WULGEz52K2Ee5pr29-6tumhNPmAaWACsVtxUnjVvM0x6QNkT5xeXuqGfopKWLi8cYISd-WWaM8D4fMPJX-IA8gGn3AcWuIr3DhtdpJw_-lp1EXQ0y84WPSAOntoPlq6dl2u79wBLPJGH02wJ768amEP-ssRZUNPCiysC0s0cuNenAQhk28Fl3nK9FnzhqTxFrYMQoto"/>
+</div>
+<div class="flex items-center gap-stack-sm entrance-anim ml-4">
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="info">info</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="history">history</span>
+</button>
+</div>
+</header>
+<!-- Disclaimer Banner -->
+<div class="mx-auto w-full max-w-4xl px-container-margin mt-stack-sm entrance-anim delay-1">
+<div class="bg-error-container/30 border border-error/10 text-on-tertiary-container px-4 py-2 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="warning">warning</span>
+<span class="font-label-md text-label-md">Facts-only. No investment advice.</span>
+</div>
+</div>
+<!-- Chat Area -->
+<section class="flex-1 overflow-y-auto hide-scrollbar px-container-margin py-stack-lg flex flex-col gap-stack-lg items-center" id="chat-canvas">
+<div class="w-full max-w-3xl flex flex-col gap-stack-lg">
+<!-- Empty State Welcome -->
+<div class="flex flex-col items-center py-section-padding entrance-anim delay-2" id="welcome-state">
+<div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-stack-md text-primary">
+<span class="material-symbols-outlined text-[32px]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-stack-sm text-center">How can I help you with Groww Funds?</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md mb-stack-lg text-center">Ask any factual question about SIPs, exit loads, fund managers, or specific Groww mutual fund details.</p>
+<div class="w-full max-w-2xl mt-8">
+<div class="flex items-center gap-2 mb-6 px-4">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h2 class="font-label-lg text-on-surface">A few ideas to get you started</h2>
+</div>
+<!-- Staggered Suggestions Pills -->
+<div class="flex flex-col gap-3">
+<div class="flex flex-wrap gap-2 justify-start">
+<button class="px-5 py-2.5 bg-surface-container-low border border-primary/20 hover:border-primary/50 hover:bg-white text-primary rounded-full font-label-md text-label-md transition-all shadow-sm active:scale-95" onclick="sendQuickQuestion(this.innerText)">What is the exit load of Groww Nifty 50 Index Fund?</button>
+<button class="px-5 py-2.5 bg-surface-container-low border border-secondary/20 hover:border-secondary/50 hover:bg-white text-secondary rounded-full font-label-md text-label-md transition-all shadow-sm active:scale-95" onclick="sendQuickQuestion(this.innerText)">Get me fund manager details</button>
+</div>
+<div class="flex flex-wrap gap-2 justify-start md:ml-8">
+<button class="px-5 py-2.5 bg-surface-container-low border border-tertiary/20 hover:border-tertiary/50 hover:bg-white text-tertiary rounded-full font-label-md text-label-md transition-all shadow-sm active:scale-95" onclick="sendQuickQuestion(this.innerText)">Who is the fund manager for Groww Flexi Cap Fund?</button>
+</div>
+<div class="flex flex-wrap gap-2 justify-start">
+<button class="px-5 py-2.5 bg-surface-container-low border border-primary/20 hover:border-primary/50 hover:bg-white text-primary rounded-full font-label-md text-label-md transition-all shadow-sm active:scale-95" onclick="sendQuickQuestion(this.innerText)">What is the minimum SIP amount?</button>
+<button class="px-5 py-2.5 bg-surface-container-low border border-on-surface-variant/20 hover:border-on-surface-variant/50 hover:bg-white text-on-surface-variant rounded-full font-label-md text-label-md transition-all shadow-sm active:scale-95" onclick="sendQuickQuestion(this.innerText)">View all available funds</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Threads -->
+<div class="hidden flex flex-col gap-stack-lg pb-stack-lg" id="chat-threads">
+<!-- User Message -->
+<div class="flex justify-end entrance-anim">
+<div class="max-w-[80%] bg-primary-container text-on-primary-container px-4 py-3 rounded-xl rounded-tr-none shadow-sm font-body-md">
+                            What is the exit load of Groww Nifty 50 Index Fund?
+                        </div>
+</div>
+<!-- Assistant Message -->
+<div class="flex justify-start gap-stack-sm entrance-anim delay-1">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[18px]" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-stack-xs max-w-[85%]">
+<div class="bg-surface-container-low border border-outline-variant/30 px-4 py-3 rounded-xl rounded-tl-none font-body-md text-on-surface">
+                                The exit load for the **Groww Nifty 50 Index Fund** is **0%**. 
+                                <br/><br/>
+                                This means there are no charges if you redeem your investments from this fund, regardless of the holding period. This is standard for most Nifty 50 index funds which aim to provide high liquidity to investors.
+                            </div>
+<div class="flex items-center gap-stack-md px-stack-sm">
+<span class="font-label-md text-label-md text-on-surface-variant opacity-60">Last updated from sources: 2024-05-15</span>
+<a class="text-primary font-label-md text-label-md hover:underline flex items-center gap-1" href="#">
+                                    Source <span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Input Bar -->
+<footer class="w-full bg-surface/80 backdrop-blur-md border-t border-outline-variant/20 p-stack-md md:p-stack-lg entrance-anim delay-3">
+<div class="max-w-4xl mx-auto flex gap-stack-sm items-end">
+<div class="flex-1 group glitter-border-container shadow-lg">
+<div class="relative bg-surface-container-lowest rounded-[calc(1.25rem-2px)] overflow-hidden">
+<textarea class="w-full resize-none bg-transparent border-none px-5 py-4 font-body-md text-on-surface focus:ring-0 transition-all pr-14 hide-scrollbar" id="main-input" placeholder="Ask a factual question about Groww mutual funds..." rows="1"></textarea>
+<button class="absolute right-3 bottom-3 p-2 bg-primary text-on-primary rounded-xl hover:opacity-90 active:scale-90 transition-all shadow-md" id="send-btn">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-4xl mx-auto mt-stack-sm flex justify-center">
+<p class="font-label-md text-label-md text-on-surface-variant opacity-50">Information provided is based on public fund documentation.</p>
+</div>
+</footer>
+</main>
+</div>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface shadow-md md:hidden border-t border-outline-variant/20">
+<button class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl p-stack-sm active:scale-90 duration-100">
+<span class="material-symbols-outlined" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-label-md text-label-md">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-stack-sm hover:bg-surface-container-high active:scale-90 duration-100">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-md text-label-md">Search</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-stack-sm hover:bg-surface-container-high active:scale-90 duration-100">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+<script>
+    const input = document.getElementById('main-input');
+    const welcomeState = document.getElementById('welcome-state');
+    const chatThreads = document.getElementById('chat-threads');
+    const sendBtn = document.getElementById('send-btn');
+
+    function toggleStates() {
+        welcomeState.classList.add('hidden');
+        chatThreads.classList.remove('hidden');
+    }
+
+    function sendQuickQuestion(text) {
+        input.value = text;
+        toggleStates();
+        const canvas = document.getElementById('chat-canvas');
+        setTimeout(() => {
+            canvas.scrollTo({ top: canvas.scrollHeight, behavior: 'smooth' });
+        }, 100);
+    }
+
+    sendBtn.addEventListener('click', () => {
+        if (input.value.trim() !== "") {
+            toggleStates();
+            input.value = "";
+            input.style.height = 'auto';
+        }
+    });
+
+    input.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+        if (this.scrollHeight > 150) {
+            this.style.overflowY = 'auto';
+            this.style.height = '150px';
+        } else {
+            this.style.overflowY = 'hidden';
+        }
+    });
+
+    // Handle Enter key for sending
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendBtn.click();
+        }
+    });
+</script>
+</body></html>

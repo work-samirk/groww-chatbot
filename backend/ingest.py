@@ -7,7 +7,8 @@ import google.generativeai as genai
 import chromadb
 
 # Load environment variables
-load_dotenv()
+import os
+load_dotenv(dotenv_path=os.path.abspath(os.path.join(os.path.dirname(__file__), "../.env")), override=True)
 
 # Configure Gemini API
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
@@ -72,28 +73,47 @@ def split_text(text, max_chars=800, overlap=150):
 
 def get_embeddings(texts):
     """
-    Fetch embeddings in batches from Gemini API
+    Fetch embeddings in batches from Gemini API with retry logic for rate limits.
     """
     if not GEMINI_API_KEY:
         # Fallback dummy embedding if key is missing (for local testing runs)
-        return [[0.0] * 768 for _ in texts]
+        return [[0.0] * 3072 for _ in texts]
         
     embeddings = []
     # Batch size limit for Gemini API is 100 texts
-    batch_size = 50
+    batch_size = 100
+    import time
     for i in range(0, len(texts), batch_size):
         batch = texts[i:i + batch_size]
-        try:
-            response = genai.embed_content(
-                model="models/text-embedding-004",
-                content=batch,
-                task_type="retrieval_document"
-            )
-            embeddings.extend(response['embedding'])
-        except Exception as e:
-            print(f"Error fetching embeddings: {e}")
-            # Return dummy on failure to keep going, but log it
-            embeddings.extend([[0.0] * 768 for _ in batch])
+        
+        # Retry loop for rate limits (429)
+        max_retries = 5
+        for attempt in range(max_retries):
+            try:
+                response = genai.embed_content(
+                    model="models/gemini-embedding-001",
+                    content=batch,
+                    task_type="retrieval_document"
+                )
+                embeddings.extend(response['embedding'])
+                break # Success, go to next batch
+            except Exception as e:
+                err_msg = str(e).lower()
+                if "quota exceeded" in err_msg or "quota" in err_msg:
+                    print(f"Daily API Quota Exceeded. Skipping retries for this batch: {e}")
+                    embeddings.extend([[0.0] * 3072 for _ in batch])
+                    break
+                elif "429" in str(e) and attempt < max_retries - 1:
+                    sleep_time = (attempt + 1) * 15
+                    print(f"Rate limit (429) hit. Sleeping for {sleep_time} seconds before retrying batch {i//batch_size + 1}...")
+                    time.sleep(sleep_time)
+                else:
+                    print(f"Error fetching embeddings: {e}")
+                    # Return dummy on failure to keep going
+                    embeddings.extend([[0.0] * 3072 for _ in batch])
+                    break
+        # Sleep slightly between batches to be respectful of free tier limits
+        time.sleep(2)
     return embeddings
 
 def ingest_data():
@@ -157,18 +177,21 @@ def ingest_data():
             
     print(f"Total chunks created: {len(documents)} ({len([m for m in metadatas if m['chunk_type'] == 'text'])} text chunks, {len([m for m in metadatas if m['chunk_type'] == 'table'])} table chunks)")
     
+    # Delete the old database directory to prevent dimension mismatches (768 vs 3072)
+    if os.path.exists(CHROMA_DIR):
+        import shutil
+        try:
+            shutil.rmtree(CHROMA_DIR)
+            print(f"Deleted old database directory: {CHROMA_DIR}")
+        except Exception as e:
+            print(f"Warning: Could not delete database directory: {e}")
+
     # Initialize ChromaDB client
     os.makedirs(CHROMA_DIR, exist_ok=True)
     chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
     
-    # Recreate the collection (removes existing index to avoid duplicates)
+    # Recreate the collection
     collection_name = "groww_mutual_funds"
-    try:
-        chroma_client.delete_collection(name=collection_name)
-        print(f"Deleted existing collection: {collection_name}")
-    except Exception:
-        pass
-        
     collection = chroma_client.create_collection(name=collection_name)
     
     # Generate embeddings

@@ -8,7 +8,7 @@ import google.generativeai as genai
 import chromadb
 
 # Load environment variables
-load_dotenv()
+load_dotenv(dotenv_path=os.path.abspath(os.path.join(os.path.dirname(__file__), "../.env")), override=True)
 
 # Configure GenAI models
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
@@ -18,7 +18,7 @@ if GEMINI_API_KEY:
 # Define models
 MODEL_CLASSIFIER = "gemini-3.1-flash-lite"
 MODEL_GENERATOR = "gemini-3.5-flash"
-MODEL_EMBEDDING = "models/text-embedding-004"
+MODEL_EMBEDDING = "models/gemini-embedding-001"
 
 # Initialize FastAPI App
 app = FastAPI(title="Groww Mutual Fund FAQ RAG Assistant API")
@@ -38,11 +38,16 @@ CHROMA_DIR = os.path.join(BASE_DIR, "data/chroma")
 chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
 collection = chroma_client.get_or_create_collection(name="groww_mutual_funds")
 
-from typing import Optional
+from typing import Optional, List
 
 # Pydantic schemas for request/response
+class Message(BaseModel):
+    sender: str
+    text: str
+
 class QueryRequest(BaseModel):
     query: str
+    history: Optional[List[Message]] = None
 
 class QueryResponse(BaseModel):
     answer: str
@@ -181,6 +186,49 @@ Synthesized Answer:"""
 def health_check():
     return {"status": "ok", "indexed_chunks": collection.count()}
 
+def refine_query(query: str, history: List[Message]) -> dict:
+    if not GEMINI_API_KEY:
+        return {"action": "RETRIEVE", "search_query": query}
+        
+    history_str = ""
+    if history:
+        for msg in history:
+            sender = getattr(msg, "sender", "user")
+            text = getattr(msg, "text", "")
+            history_str += f"{sender.upper()}: {text}\n"
+        
+    prompt = f"""You are a query refiner for a Groww Mutual Fund RAG Chatbot.
+Analyze the user's new query and the conversation history to choose the next action.
+
+Conversation History:
+{history_str}
+
+User's New Query: "{query}"
+
+Task:
+1. Does the query ask about specific mutual fund properties (like minimum SIP, fund manager, exit load, expense ratio, allotment date, sector, etc.)?
+2. If yes, is the specific mutual fund scheme name clear from either the new query or the conversation history?
+   - Note: Groww has multiple funds (e.g. Groww Large Cap Fund, Groww Nifty 50 Index Fund, Groww Multicap Fund, etc.)
+3. If the specific fund name is clear or can be inferred, output:
+   {{"action": "RETRIEVE", "search_query": "<A fully rewritten search query that includes the scheme name and the question for vector search. Example: 'What is the exit load of Groww Nifty 50 Index Fund'>"}}
+4. If the query asks about a property but the fund is NOT specified (and cannot be inferred from history), output:
+   {{"action": "CLARIFY", "clarification_message": "Could you please specify which Groww mutual fund you are referring to? (e.g., Groww Nifty 50 Index Fund, Groww Large Cap Fund, etc.)"}}
+5. If the query is a general greeting, conversational follow-up, or meta-question (e.g., 'hello', 'thanks', 'why did you only mention 2 funds?'), output:
+   {{"action": "RETRIEVE", "search_query": "{query}"}}
+
+Output ONLY a raw JSON block (no markdown, no backticks)."""
+
+    try:
+        model = genai.GenerativeModel(MODEL_CLASSIFIER)
+        response = model.generate_content(prompt)
+        text_content = response.text.strip()
+        import re
+        text_content = re.sub(r"^```(?:json)?\s*|\s*```$", "", text_content, flags=re.MULTILINE | re.IGNORECASE).strip()
+        return json.loads(text_content)
+    except Exception as e:
+        print(f"Error during query refinement: {e}")
+        return {"action": "RETRIEVE", "search_query": query}
+
 @app.post("/api/chat", response_model=QueryResponse)
 def handle_chat(payload: QueryRequest):
     query = payload.query.strip()
@@ -201,9 +249,24 @@ def handle_chat(payload: QueryRequest):
             is_refusal=True
         )
 
-    # Step 3: Run factual retrieval and generation
-    hits = retrieve_context(query)
-    response_data = generate_rag_answer(query, hits)
+    # Step 3: Refine query (handle ambiguous queries and conversational rewrites)
+    refinement = refine_query(query, payload.history or [])
+    action = refinement.get("action", "RETRIEVE")
+    print(f"Refinement Action: {action}")
+
+    if action == "CLARIFY":
+        return QueryResponse(
+            answer=refinement.get("clarification_message", "Could you please specify which Groww mutual fund you are referring to?"),
+            source_link=None,
+            last_updated=None,
+            is_refusal=False
+        )
+
+    # Step 4: Run factual retrieval and generation
+    search_query = refinement.get("search_query", query)
+    print(f"Search Query: '{search_query}'")
+    hits = retrieve_context(search_query)
+    response_data = generate_rag_answer(search_query, hits)
     
     return QueryResponse(
         answer=response_data["answer"],

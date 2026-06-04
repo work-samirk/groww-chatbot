@@ -34,6 +34,26 @@ def table_to_markdown(table_soup):
             md_lines.append("| " + " | ".join(["---"] * len(cell_texts)) + " |")
     return "\n".join(md_lines)
 
+def extract_portfolio_splits(soup):
+    splits = {}
+    # Find h3/div/span section titles containing sectionTitle class in Groww mutual fund page
+    for title_tag in soup.find_all(['h3', 'div', 'span'], class_=lambda c: c and 'sectionTitle' in c):
+        title_text = title_tag.get_text(strip=True)
+        parent = title_tag.parent
+        if parent:
+            items = parent.find_all(class_=lambda c: c and 'categoryItem' in c)
+            if items:
+                section_data = {}
+                for item in items:
+                    spans = item.find_all('span')
+                    if len(spans) >= 2:
+                        label = spans[0].get_text(strip=True)
+                        value = spans[1].get_text(strip=True)
+                        section_data[label] = value
+                if section_data:
+                    splits[title_text] = section_data
+    return splits
+
 def parse_groww_page(html_content, url):
     soup = BeautifulSoup(html_content, 'html.parser')
     
@@ -51,6 +71,26 @@ def parse_groww_page(html_content, url):
         if table_md:
             tables.append(table_md)
             
+    # 2b. Extract portfolio splits
+    splits = extract_portfolio_splits(soup)
+    for title, section_data in splits.items():
+        col1_header = "Category"
+        if "split" in title.lower():
+            col1_header = "Asset Class"
+        elif "cap" in title.lower():
+            col1_header = "Market Cap Class"
+        elif "sector" in title.lower():
+            col1_header = "Sector"
+            
+        table_rows = [
+            f"| {col1_header} | Allocation |",
+            "| --- | --- |"
+        ]
+        for label, val in section_data.items():
+            table_rows.append(f"| {label} | {val} |")
+        
+        tables.append("\n".join(table_rows))
+            
     # 3. Extract text paragraphs
     paragraphs = []
     # Focus on main sections, typically paragraphs inside body text
@@ -62,10 +102,9 @@ def parse_groww_page(html_content, url):
             if len(text) > 20 and not text.startswith("Disclaimer"):
                 paragraphs.append(text)
         elif p.name in ['div', 'span']:
-            # Only extract high-value key-value pairs like "Expense Ratio", "Exit Load", etc.
             text = p.get_text(strip=True)
-            if any(keyword in text for keyword in ["Expense ratio", "Exit load", "Min. investment", "Fund Manager", "Benchmark", "Riskometer"]):
-                if len(text) < 300: # avoid giant containers
+            if any(keyword in text.lower() for keyword in ["expense ratio", "exit load", "min. investment", "fund manager", "benchmark", "riskometer", "fund managers", "investment objective"]):
+                if len(text) < 1000: # avoid giant containers, but allow descriptive overview divs
                     paragraphs.append(text)
                     
     # Remove duplicates preserving order
@@ -84,6 +123,7 @@ def parse_groww_page(html_content, url):
         "url": url,
         "content": full_content,
         "tables": tables,
+        "portfolio_splits": splits,
         "scraped_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     }
 
@@ -109,6 +149,10 @@ def run_scraper(urls=GROWW_URLS):
                 # Go to URL and wait for DOM content loaded and network idle (up to 30s)
                 page.goto(url, wait_until="domcontentloaded", timeout=30000)
                 # Wait an extra 2 seconds for client-side JS hydration / dynamic fields
+                time.sleep(2)
+                
+                # Scroll down to load holdings analysis section and splits
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight/2)")
                 time.sleep(2)
                 
                 html_content = page.content()

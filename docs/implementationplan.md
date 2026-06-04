@@ -152,11 +152,11 @@ We prioritize **free-tier and open-source tools** to ensure zero-cost developmen
 ### Phase 6: Minimal Chat Interface (Frontend)
 *Goal: Build a modern, responsive chat interface resembling Groww's UI.*
 
-- [ ] **Aesthetics**:
+- [x] **Aesthetics**:
   - Dark mode with glassmorphism panels.
   - Accent Color: Groww Mint Green (`#00D09C`).
   - Font: Google Fonts (Inter or Outfit).
-- [ ] **Key Layout Features**:
+- [x] **Key Layout Features**:
   - **Header**: Persistent disclaimer badge: `“Facts-only. No investment advice.”`
   - **Welcome Area**: Three clickable example questions:
     1. *"What is the exit load of Groww Large Cap Fund?"*
