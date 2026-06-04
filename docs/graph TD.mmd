@@ -1,0 +1,39 @@
+graph TD
+    %% Offline Pipeline: Data Ingestion
+    subgraph Offline Ingestion Pipeline ["Offline Ingestion Pipeline (ETL)"]
+        A1[Daily Cron Scheduler] --> A2[Web Scraper: Target Groww URLs]
+        A2 --> A3[Semantic & Table-Aware Chunking]
+        A3 --> A4[Metadata Enrichment: Source URL, Timestamp]
+        A4 --> A5[Embedding Generator]
+        A5 --> A6[(Vector Database)]
+    end
+
+    %% Online Pipeline: Request-Response Flow
+    subgraph Online Query Pipeline ["Online Query Pipeline"]
+        U[User Chat Interface] -->|Query| Q1[Input Guardrail / Intent Classifier]
+        
+        %% Refusal Path
+        Q1 -->|Advisory / Speculative Query| R1[Refusal Router]
+        R1 -->|Educational Resource Link| U
+        
+        %% Factual Path
+        Q1 -->|Factual / Objective Query| Q2[Query Expansion & Vectorization]
+        Q2 -->|Embedding Vector| Q3[Retriever: Hybrid Semantic + Keyword Search]
+        A6 -->|Query Matches| Q3
+        
+        %% Reranking & Synthesis
+        Q3 -->|Top Chunks & Metadata| Q4[Re-ranker Engine]
+        Q4 -->|Filtered Context| Q5[LLM Generator: Grounded Prompt]
+        Q5 -->|Synthesized Response| G1[Output Verification Guardrail]
+        
+        %% Compliance & Output
+        G1 -->|Compliant: Factual, Citations, Footer| U
+        G1 -->|Non-Compliant / Hallucinated| G2[Fallback / Refusal Response]
+        G2 --> U
+    end
+
+    %% Styles
+    classDef offline fill:#f9f9fb,stroke:#2b2b2b,stroke-width:1px;
+    classDef online fill:#f4fbf7,stroke:#1db954,stroke-width:1px;
+    class OfflineIngestionPipeline offline;
+    class OnlineQueryPipeline online;
