@@ -29,8 +29,6 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:3005",
-        "https://projects.emversity.com",
-        "http://projects.emversity.com",
         "https://projects.samir.pm",
         "http://projects.samir.pm",
     ],
