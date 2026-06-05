@@ -1,22 +1,22 @@
-FROM python:3.10-slim
+FROM --platform=linux/amd64 ubuntu:22.04
 
-WORKDIR /app
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
+    python3.10 \
+    python3-pip \
+    python3-dev \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /app
 
-# Copy codebase and database files
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
+
 COPY backend/ ./backend
 COPY data/ ./data
 
-# Expose backend port
 EXPOSE 8005
 
-# Start backend uvicorn server
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8005"]
+CMD ["python3", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8005"]

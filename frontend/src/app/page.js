@@ -18,8 +18,8 @@ export default function Home() {
   useEffect(() => {
     const fetchHealth = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8006";
-        const res = await fetch(`${apiUrl}/api/health`);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8005";
+        const res = await fetch(`${apiUrl}/api/v1/groww/health`);
         if (res.ok) {
           const data = await res.json();
           if (data.last_updated) {
@@ -134,14 +134,14 @@ export default function Home() {
     setIsThinking(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8006";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8005";
       // Format message history
       const history = messages.map(msg => ({
         sender: msg.sender,
         text: msg.text
       }));
 
-      const response = await fetch(`${apiUrl}/api/chat`, {
+      const response = await fetch(`${apiUrl}/api/v1/groww/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
