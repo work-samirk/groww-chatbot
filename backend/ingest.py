@@ -71,50 +71,6 @@ def split_text(text, max_chars=800, overlap=150):
         
     return [c.strip() for c in chunks if c.strip()]
 
-def get_embeddings(texts):
-    """
-    Fetch embeddings in batches from Gemini API with retry logic for rate limits.
-    """
-    if not GEMINI_API_KEY:
-        # Fallback dummy embedding if key is missing (for local testing runs)
-        return [[0.0] * 3072 for _ in texts]
-        
-    embeddings = []
-    # Batch size limit for Gemini API is 100 texts
-    batch_size = 100
-    import time
-    for i in range(0, len(texts), batch_size):
-        batch = texts[i:i + batch_size]
-        
-        # Retry loop for rate limits (429)
-        max_retries = 5
-        for attempt in range(max_retries):
-            try:
-                response = genai.embed_content(
-                    model="models/gemini-embedding-001",
-                    content=batch,
-                    task_type="retrieval_document"
-                )
-                embeddings.extend(response['embedding'])
-                break # Success, go to next batch
-            except Exception as e:
-                err_msg = str(e).lower()
-                if "quota exceeded" in err_msg or "quota" in err_msg:
-                    print(f"Daily API Quota Exceeded. Skipping retries for this batch: {e}")
-                    embeddings.extend([[0.0] * 3072 for _ in batch])
-                    break
-                elif "429" in str(e) and attempt < max_retries - 1:
-                    sleep_time = (attempt + 1) * 15
-                    print(f"Rate limit (429) hit. Sleeping for {sleep_time} seconds before retrying batch {i//batch_size + 1}...")
-                    time.sleep(sleep_time)
-                else:
-                    print(f"Error fetching embeddings: {e}")
-                    # Return dummy on failure to keep going
-                    embeddings.extend([[0.0] * 3072 for _ in batch])
-                    break
-        # Sleep slightly between batches to be respectful of free tier limits
-        time.sleep(2)
-    return embeddings
 
 def ingest_data():
     print(f"Reading scraped files from {RAW_DATA_DIR}...")
@@ -190,19 +146,31 @@ def ingest_data():
     os.makedirs(CHROMA_DIR, exist_ok=True)
     chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
     
-    # Recreate the collection
+    # Recreate the collection with local embedding function
     collection_name = "groww_mutual_funds"
-    collection = chroma_client.create_collection(name=collection_name)
+    from chromadb.utils import embedding_functions
+    default_ef = embedding_functions.DefaultEmbeddingFunction()
     
-    # Generate embeddings
-    print("Generating embeddings via Gemini API...")
-    embeddings = get_embeddings(documents)
+    collection = chroma_client.create_collection(
+        name=collection_name,
+        embedding_function=default_ef
+    )
     
-    # Insert chunks into ChromaDB
+    # Generate local embeddings one by one (avoids ONNX threading deadlocks on batch inputs)
+    print("Generating local embeddings one by one...")
+    embeddings = []
+    import time
+    start_time = time.time()
+    for idx, doc in enumerate(documents):
+        embeddings.append(default_ef([doc])[0])
+        if idx > 0 and idx % 100 == 0:
+            print(f"Processed {idx}/{len(documents)} embeddings (elapsed: {time.time() - start_time:.1f}s)...")
+            
+    print(f"Embedding generation completed in {time.time() - start_time:.1f}s. Preparing database insert...")
+    
+    # Insert chunks and pre-computed embeddings into ChromaDB
     print(f"Upserting {len(documents)} vectors into ChromaDB...")
-    
-    # Batch collection insertions (max 1000 items per batch to be safe)
-    batch_size = 500
+    batch_size = 100
     for i in range(0, len(documents), batch_size):
         end = i + batch_size
         collection.add(
