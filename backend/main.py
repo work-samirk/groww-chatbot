@@ -382,7 +382,7 @@ def get_latest_scraped_time() -> Optional[str]:
         print(f"Error reading scraped time: {e}")
     return None
 
-@app.get("/api/health")
+@app.get("/api/v1/groww/health")
 def health_check():
     return {
         "status": "ok", 
@@ -390,7 +390,7 @@ def health_check():
         "last_updated": get_latest_scraped_time()
     }
 
-@app.post("/api/chat", response_model=QueryResponse)
+@app.post("/api/v1/groww/chat", response_model=QueryResponse)
 def handle_chat(payload: QueryRequest):
     query = payload.query.strip()
     if not query:

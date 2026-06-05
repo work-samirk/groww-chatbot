@@ -19,7 +19,7 @@ export default function Home() {
     const fetchHealth = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8006";
-        const res = await fetch(`${apiUrl}/api/health`);
+        const res = await fetch(`${apiUrl}/api/v1/groww/health`);
         if (res.ok) {
           const data = await res.json();
           if (data.last_updated) {
@@ -141,7 +141,7 @@ export default function Home() {
         text: msg.text
       }));
 
-      const response = await fetch(`${apiUrl}/api/chat`, {
+      const response = await fetch(`${apiUrl}/api/v1/groww/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
