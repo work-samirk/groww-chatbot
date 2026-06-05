@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     const fetchHealth = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8006";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8005";
         const res = await fetch(`${apiUrl}/api/v1/groww/health`);
         if (res.ok) {
           const data = await res.json();
@@ -134,7 +134,7 @@ export default function Home() {
     setIsThinking(true);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8006";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8005";
       // Format message history
       const history = messages.map(msg => ({
         sender: msg.sender,
