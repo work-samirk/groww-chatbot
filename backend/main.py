@@ -26,7 +26,14 @@ app = FastAPI(title="Groww Mutual Fund FAQ RAG Assistant API")
 # Enable CORS for Next.js frontend (typically port 3000)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, restrict this to the frontend origin
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3005",
+        "https://projects.emversity.com",
+        "http://projects.emversity.com",
+        "https://projects.samir.pm",
+        "http://projects.samir.pm",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
